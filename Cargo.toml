@@ -2,6 +2,9 @@
 name = "buscaminas"
 version = "0.1.0"
 edition = "2021"
+description = "Trabajo practico 1 para la materia Taller de Programacion I - Catedra Deymonnaz - FIUBA"
+authors = ["Manuel Sanchez <msanchezf@fi.uba.ar>"]
+keywords = ["minesweeper", "buscaminas", "FIUBA"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
