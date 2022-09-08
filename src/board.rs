@@ -205,6 +205,48 @@ mod tests {
     }
 
     #[test]
+    fn get_bounds_returns_correct_vertical_bounds() {
+        let data = "..*..\n..***\n*...*\n.*...\n";
+        let board = Board::new(data.as_bytes());
+        
+        assert_eq!(board.get_bounds(board.height, 0), (0,1));
+        assert_eq!(board.get_bounds(board.height, board.height-1), (-1,0));
+    }
+
+    #[test]
+    fn get_bounds_returns_correct_horizontal_bounds() {
+        let data = "..*..\n..***\n*...*\n.*...\n";
+        let board = Board::new(data.as_bytes());
+        
+        assert_eq!(board.get_bounds(board.width, 0), (0,1));
+        assert_eq!(board.get_bounds(board.width, board.width-1), (-1,0));
+    }
+
+    #[test]
+    fn counting_surrounding_mines_for_edge_position_returns_correct_value() {
+        let data = ".**..\n*.***\n*...*\n.*.*.\n";
+        let board = Board::new(data.as_bytes());
+        
+        assert_eq!(board.count_surrounding_mines(0, 0), 2);
+    }
+
+    #[test]
+    fn counting_surrounding_mines_for_border_position_returns_correct_value() {
+        let data = ".**..\n*.***\n.*..*\n.*.*.\n";
+        let board = Board::new(data.as_bytes());
+        
+        assert_eq!(board.count_surrounding_mines(2, 0), 3);
+    }
+
+    #[test]
+    fn counting_surrounding_mines_for_middle_position_returns_correct_value() {
+        let data = ".**..\n*.***\n.*..*\n.*.*.\n";
+        let board = Board::new(data.as_bytes());
+        
+        assert_eq!(board.count_surrounding_mines(2, 3), 5);
+    }
+
+    #[test]
     fn count_mines_returns_correct_number_of_mines() {
         let data = "..*..\n..***\n*...*\n.*...\n";
         let board = Board::new(data.as_bytes());
