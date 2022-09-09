@@ -32,6 +32,7 @@ impl Board {
     ///
     /// * [`MINE`](MINE)
     /// * [`NEWLINE`](NEWLINE)
+    /// * [`EMPTY`](EMPTY) (Cualquier caracter distinto de los 2 anteriores sera considerado como EMPTY)
     ///
     /// Todos los otros caracteres son considerados espacios vacios.
     ///
@@ -51,20 +52,21 @@ impl Board {
         while data[width] != NEWLINE {
             width += 1;
         }
-        let width_con_newline = width + 1;
+        let width_con_newline: usize = width + 1;
         let height: usize = data.len() / (width_con_newline);
         let mut row: Vec<u8> = vec![];
 
         for char in data {
-            if *char == NEWLINE {
-                matrix.push(row);
-                row = vec![];
-            } else if *char == MINE{
-                row.push(*char);
-            } else {
-                row.push(EMPTY);
+            match *char {
+                NEWLINE => {
+                    matrix.push(row);
+                    row = vec![];
+                },
+                MINE => row.push(MINE),
+                _ => row.push(EMPTY),
             }
         }
+
         Board {
             data: matrix,
             width,
@@ -125,6 +127,7 @@ impl Board {
                     }
                 }
             }
+
             resultado.push(NEWLINE_CHAR);
         }
         resultado
@@ -139,13 +142,13 @@ impl Board {
     /// * `column` - Es un `usize` que representa la columna del casillero al que se le quieren contar las minas vecinas.
     fn count_surrounding_mines(&self, row: usize, column: usize) -> u8 {
         let mut surrounding_mines: u8 = 0;
-        let board_width = self.width;
-        let board_height = self.height;
+        let board_width: usize = self.width;
+        let board_height: usize = self.height;
         let row_aux: isize = row as isize;
         let column_aux: isize = column as isize;
 
-        let vertical_bounds = self.get_bounds(board_height, row);
-        let horizontal_bounds = self.get_bounds(board_width, column);
+        let vertical_bounds: (isize, isize) = self.get_bounds(board_height, row);
+        let horizontal_bounds: (isize, isize) = self.get_bounds(board_width, column);
 
         for i in vertical_bounds.0..(vertical_bounds.1 + 1) {
             for j in horizontal_bounds.0..(horizontal_bounds.1 + 1) {
@@ -190,9 +193,9 @@ mod tests {
 
     #[test]
     fn board_initializes_correctly() {
-        let data = ".*...\n..**.\n..*..\n....*\n";
-        let board = Board::new(data.as_bytes());
-        let matrix = vec![
+        let data: &str = ".*...\n..**.\n..*..\n....*\n";
+        let board: Board = Board::new(data.as_bytes());
+        let matrix: Vec<Vec<u8>> = vec![
             vec![EMPTY, MINE, EMPTY, EMPTY, EMPTY],
             vec![EMPTY, EMPTY, MINE, MINE, EMPTY],
             vec![EMPTY, EMPTY, MINE, EMPTY, EMPTY],
@@ -206,8 +209,8 @@ mod tests {
 
     #[test]
     fn get_bounds_returns_correct_vertical_bounds() {
-        let data = "..*..\n..***\n*...*\n.*...\n";
-        let board = Board::new(data.as_bytes());
+        let data: &str = "..*..\n..***\n*...*\n.*...\n";
+        let board:Board = Board::new(data.as_bytes());
         
         assert_eq!(board.get_bounds(board.height, 0), (0,1));
         assert_eq!(board.get_bounds(board.height, board.height-1), (-1,0));
@@ -215,8 +218,8 @@ mod tests {
 
     #[test]
     fn get_bounds_returns_correct_horizontal_bounds() {
-        let data = "..*..\n..***\n*...*\n.*...\n";
-        let board = Board::new(data.as_bytes());
+        let data: &str = "..*..\n..***\n*...*\n.*...\n";
+        let board: Board = Board::new(data.as_bytes());
         
         assert_eq!(board.get_bounds(board.width, 0), (0,1));
         assert_eq!(board.get_bounds(board.width, board.width-1), (-1,0));
@@ -224,51 +227,51 @@ mod tests {
 
     #[test]
     fn counting_surrounding_mines_for_edge_position_returns_correct_value() {
-        let data = ".**..\n*.***\n*...*\n.*.*.\n";
-        let board = Board::new(data.as_bytes());
+        let data: &str = ".**..\n*.***\n*...*\n.*.*.\n";
+        let board: Board = Board::new(data.as_bytes());
         
         assert_eq!(board.count_surrounding_mines(0, 0), 2);
     }
 
     #[test]
     fn counting_surrounding_mines_for_border_position_returns_correct_value() {
-        let data = ".**..\n*.***\n.*..*\n.*.*.\n";
-        let board = Board::new(data.as_bytes());
+        let data: &str = ".**..\n*.***\n.*..*\n.*.*.\n";
+        let board: Board = Board::new(data.as_bytes());
         
         assert_eq!(board.count_surrounding_mines(2, 0), 3);
     }
 
     #[test]
     fn counting_surrounding_mines_for_middle_position_returns_correct_value() {
-        let data = ".**..\n*.***\n.*..*\n.*.*.\n";
-        let board = Board::new(data.as_bytes());
+        let data: &str = ".**..\n*.***\n.*..*\n.*.*.\n";
+        let board: Board = Board::new(data.as_bytes());
         
         assert_eq!(board.count_surrounding_mines(2, 3), 5);
     }
 
     #[test]
     fn count_mines_returns_correct_number_of_mines() {
-        let data = "..*..\n..***\n*...*\n.*...\n";
-        let board = Board::new(data.as_bytes());
-        let expected_result = ".2*42\n13***\n*334*\n2*111\n";
+        let data: &str = "..*..\n..***\n*...*\n.*...\n";
+        let board: Board = Board::new(data.as_bytes());
+        let expected_result: &str = ".2*42\n13***\n*334*\n2*111\n";
         
         assert_eq!(board.mine_count(), expected_result);
     }
 
     #[test]
     fn count_mines_on_empty_board_returns_empty_board() {
-        let data = ".....\n.....\n.....\n.....\n";
-        let board = Board::new(data.as_bytes());
-        let expected_result = ".....\n.....\n.....\n.....\n";
+        let data: &str = ".....\n.....\n.....\n.....\n";
+        let board: Board = Board::new(data.as_bytes());
+        let expected_result: &str = ".....\n.....\n.....\n.....\n";
         
         assert_eq!(board.mine_count(), expected_result);
     }
 
     #[test]
     fn count_mines_on_full_board_returns_full_board() {
-        let data = "*****\n*****\n*****\n*****\n";
-        let board = Board::new(data.as_bytes());
-        let expected_result = "*****\n*****\n*****\n*****\n";
+        let data: &str = "*****\n*****\n*****\n*****\n";
+        let board: Board = Board::new(data.as_bytes());
+        let expected_result: &str = "*****\n*****\n*****\n*****\n";
         
         assert_eq!(board.mine_count(), expected_result);
     }
