@@ -40,11 +40,10 @@ impl Board {
     /// # Ejemplo
     /// ```rust
     /// use buscaminas::board::Board;
-    /// fn main() {
-    ///     // Notar como data tiene 5 elementos entre cada `\n` y debe finalizar con el mismo.
-    ///     let data = ".*.*.\n..*..\n..*..\n.....\n";
-    ///     let board = Board::new(data.as_bytes());
-    /// }
+    ///
+    /// // Notar como data tiene 5 elementos entre cada `\n` y debe finalizar con el mismo.
+    /// let data = ".*.*.\n..*..\n..*..\n.....\n";
+    /// let board = Board::new(data.as_bytes());
     /// ```
     pub fn new(data: &[u8]) -> Self {
         let mut width: usize = 0;
@@ -108,7 +107,7 @@ impl Board {
     /// * [`EMPTY_CHAR`](EMPTY_CHAR): Representa los espacios vacios.
     /// * [`NEWLINE_CHAR`](NEWLINE_CHAR): Marca los saltos de linea.
     /// * [`ERROR_CHAR`](ERROR_CHAR): Solo es escrito en caso de error.
-    /// 
+    ///
     /// # Ejemplo
     /// Si `Board.data` contiene la siguiente matriz:
     /// ```
@@ -122,12 +121,11 @@ impl Board {
     /// Al ejecutar la funcion, obtendremos:
     /// ```rust
     /// use buscaminas::board::Board;
-    /// 
-    /// fn main() {
-    ///     let data: &str = "..*..\n..***\n*...*\n.*...\n";
-    ///     let board: Board = Board::new(data.as_bytes());
-    ///     let board_with_mine_count = board.mine_count(); // Devuelve ".2*42\n13***\n*334*\n2*111\n"
-    /// }
+    ///
+    /// let data: &str = "..*..\n..***\n*...*\n.*...\n";
+    /// let board: Board = Board::new(data.as_bytes());
+    /// let board_with_mine_count = board.mine_count(); // Devuelve ".2*42\n13***\n*334*\n2*111\n"
+    ///
     /// ```
     pub fn mine_count(&self) -> String {
         let mut resultado: String = String::new();

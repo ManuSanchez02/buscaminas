@@ -1,6 +1,7 @@
 use buscaminas::board::Board;
-use buscaminas::file_management::read_file_from_first_argument;
-use std::io::Result;
+use std::env::args;
+use std::fs::read_to_string;
+use std::io::{Error, ErrorKind, Result};
 
 /// Imprime por pantalla el tablero pasado como argumento de linea de comandos, pero con un conteo de minas vecinas por casillero.
 ///
@@ -12,10 +13,22 @@ use std::io::Result;
 /// El programa solo puede recibir 1 argumento. En caso contrario, se arrojara un error indicando que se esperaba 1 argumento.
 /// Si el tablero no se puede encontrar, el programa devuelve un error con el mensaje de que no existe tal archivo.
 fn main() -> Result<()> {
-    let data: String = match read_file_from_first_argument() {
+    let args: Vec<String> = args().collect();
+    if args.len() != 2 {
+        return Err(Error::new(
+            ErrorKind::InvalidInput,
+            "Error while trying to read the file: Expected 1 argument.",
+        ));
+    }
+
+    let data = match read_to_string(&args[1]) {
         Err(error) => return Err(error),
         Ok(data) => data,
     };
+
+    if data.is_empty() {
+        return Err(Error::new(ErrorKind::InvalidInput, "File is empty."));
+    }
 
     let board: Board = Board::new(data.as_bytes());
     board.print_mine_count();
