@@ -1,8 +1,6 @@
+use buscaminas::board::Board;
+use buscaminas::file_management::read_file_from_first_argument;
 use std::io::Result;
-mod board;
-use crate::board::Board;
-mod file_management;
-use crate::file_management::read_file_from_first_argument;
 
 /// Imprime por pantalla el tablero pasado como argumento de linea de comandos, pero con un conteo de minas vecinas por casillero.
 ///

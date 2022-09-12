@@ -5,7 +5,7 @@ use std::io::{Error, ErrorKind, Result};
 /// Lee el archivo pasado como parametro y devuelve su contenido envuelto en un Result.
 ///
 /// # Error
-/// Devuelve error si no se paso un argumento a la hora de ejecutar el programa. Tambien 
+/// Devuelve error si no se paso un argumento a la hora de ejecutar el programa. Tambien
 /// devuelve error en caso de lectura erronea del archivo o si el archivo esta vacio.
 ///
 /// # Ejemplo
